@@ -3,7 +3,7 @@ import {relayPool} from 'nostr-tools'
 
 import {normalizeURL} from './common'
 
-const NOSTR_EXTENSION_ID = 'bkdhadcilfgcahjkeociamehbfgjijao'
+const NOSTR_EXTENSION_ID = 'kpgefcfmnafjgpblomihpgmejjdanjjp'
 
 let pool
 const urlEvents = {}
