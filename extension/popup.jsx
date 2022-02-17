@@ -127,6 +127,8 @@ function Popup() {
         content: comment
       }
     })
+
+    setComment('')
   }
 }
 
