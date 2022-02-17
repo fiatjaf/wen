@@ -1,0 +1,25 @@
+{
+  "name": "wen",
+  "description": "Web Enhancer Extension",
+  "version": "1.1.0",
+  "homepage_url": "https://github.com/fiatjaf/wen",
+  "manifest_version": 3,
+  "icons": {
+    "16": "icons/16x16.png",
+    "32": "icons/32x32.png",
+    "48": "icons/48x48.png",
+    "128": "icons/128x128.png"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.build.js"
+  },
+  "action": {
+    "default_title": "wen",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "tabs",
+    "notifications"
+  ]
+}
