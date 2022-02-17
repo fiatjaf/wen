@@ -13,19 +13,72 @@ function Popup() {
   }, [])
 
   return (
-    <>
-      <h2>wen</h2>
-      <textarea value={comment} onChange={e => setComment(e.target.value)} />
+    <div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'flex-end',
+          padding: '4px',
+          margin: '6px',
+          border: '1px solid orange'
+        }}
+      >
+        comment about this page
+        <textarea
+          value={comment}
+          onChange={e => setComment(e.target.value)}
+          autoFocus
+          style={{border: 'none', outline: 'none', width: '200px'}}
+        />
+        <button style={{margin: '4px 0 4px'}} onClick={publishEvent}>
+          post comment
+        </button>
+      </div>
       <div>
         {events.map(evt => (
-          <div>
-            <div>{evt.pubkey}</div>
-            <div>{evt.content}</div>
+          <div
+            style={{
+              padding: '8px',
+              margin: '6px',
+              border: '1px solid silver'
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                fontSize: '90%',
+                fontFamily: 'monospace'
+              }}
+            >
+              <div>
+                from{' '}
+                <a
+                  href={`web+nostr:${evt.pubkey}`}
+                  title={evt.pubkey}
+                  target="_blank"
+                  style={{color: 'blue'}}
+                >
+                  {evt.pubkey.slice(0, 5)}…
+                </a>
+              </div>
+              <div>
+                <a
+                  href={`web+nostr:event:${evt.id}`}
+                  title={evt.id}
+                  target="_blank"
+                  style={{color: 'gray'}}
+                >
+                  {new Date(evt.created_at * 1000).toISOString().split('T')[0]}
+                </a>
+              </div>
+            </div>
+            <div style={{fontSize: '110%'}}>{evt.content}</div>
           </div>
         ))}
       </div>
-      <button onClick={publishEvent}>publish</button>
-    </>
+    </div>
   )
 
   async function loadComments() {
