@@ -1,12 +1,13 @@
 import browser from 'webextension-polyfill'
 import {render} from 'react-dom'
 import React, {useState, useEffect} from 'react'
+import useComputedState from 'use-computed-state'
 
 import {normalizeURL} from './common'
 
 function Popup() {
   let [comment, setComment] = useState('')
-  let [events, setEvents] = useState([])
+  let [events, setEvents] = useState({})
   let [tab, setTab] = useState(null)
 
   useEffect(() => {
@@ -14,14 +15,31 @@ function Popup() {
       let [tab] = await browser.tabs.query({active: true, currentWindow: true})
       setTab(tab)
 
+      let url = normalizeURL(tab.url)
+
       let events = await browser.runtime.sendMessage({
         type: 'read',
-        url: normalizeURL(tab.url),
+        url,
         tabId: tab.id
       })
       setEvents(events)
+
+      browser.runtime.onMessage.addListener(message => {
+        if (message.url !== url) return
+
+        switch (message.type) {
+          case 'events':
+            setEvents(message.events)
+            break
+        }
+      })
     })()
   }, [])
+
+  let orderedEvents = useComputedState(
+    () => Object.values(events).sort((a, b) => a.created_at - b.created_at),
+    [events]
+  )
 
   if (!tab) return '...'
 
@@ -51,8 +69,9 @@ function Popup() {
         </button>
       </div>
       <div>
-        {events.map(evt => (
+        {orderedEvents.map(evt => (
           <div
+            key={evt.id}
             style={{
               padding: '8px',
               margin: '6px',

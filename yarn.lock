@@ -1427,6 +1427,11 @@ uri-js@^4.2.2:
   dependencies:
     punycode "^2.1.0"
 
+use-computed-state@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/use-computed-state/-/use-computed-state-1.1.0.tgz#015235680d8c1817ddcb27cc6260e4ead6c0a269"
+  integrity sha512-kgJrX6o97/LTDsN0kCQQ3Kd1ggMN1WFLRO7/vo1NJFbZhWqwLQkVcpeFHhscyQTQ5eYhSAPCpZUtpSZ1lLnLdg==
+
 utf-8-validate@^5.0.2:
   version "5.0.8"
   resolved "https://registry.yarnpkg.com/utf-8-validate/-/utf-8-validate-5.0.8.tgz#4a735a61661dbb1c59a0868c397d2fe263f14e58"

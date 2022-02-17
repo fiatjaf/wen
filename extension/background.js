@@ -7,6 +7,7 @@ const NOSTR_EXTENSION_ID = 'bkdhadcilfgcahjkeociamehbfgjijao'
 
 let pool
 const urlEvents = {}
+const urlDispatchers = {}
 
 async function initNostr() {
   const pool = relayPool()
@@ -56,15 +57,20 @@ browser.runtime.onMessage.addListener(
 
     switch (type) {
       case 'read': {
-        if (!(url in urlEvents)) {
+        if (url in urlEvents) {
+          return urlEvents[url]
+        } else {
           const events = {}
           urlEvents[url] = events
-          await fetchEvents(url, tabId, events)
+          urlDispatchers[url] = events =>
+            browser.runtime.sendMessage({
+              type: 'events',
+              url,
+              events
+            })
+          fetchEvents(url, tabId, events)
+          return {}
         }
-
-        return Object.values(urlEvents[url]).sort(
-          (a, b) => a.created_at - b.created_at
-        )
       }
       case 'publish': {
         try {
@@ -147,11 +153,15 @@ async function fetchEvents(url, tabId, events) {
   pool.sub({
     filter: {'#r': [url]},
     cb: event => {
+      if (event.id in events) return
       events[event.id] = event
+
       browser.action.setBadgeText({
         text: `${Object.keys(events).length}`,
         tabId
       })
+
+      urlDispatchers[url]?.(events)
     }
   })
 }
