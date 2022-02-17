@@ -7,10 +7,23 @@ import {normalizeURL} from './common'
 function Popup() {
   let [comment, setComment] = useState('')
   let [events, setEvents] = useState([])
+  let [tab, setTab] = useState(null)
 
   useEffect(() => {
-    loadComments()
+    ;(async () => {
+      let [tab] = await browser.tabs.query({active: true, currentWindow: true})
+      setTab(tab)
+
+      let events = await browser.runtime.sendMessage({
+        type: 'read',
+        url: normalizeURL(tab.url),
+        tabId: tab.id
+      })
+      setEvents(events)
+    })()
   }, [])
+
+  if (!tab) return '...'
 
   return (
     <div>
@@ -24,7 +37,9 @@ function Popup() {
           border: '1px solid orange'
         }}
       >
-        comment about this page
+        <span style={{textAlign: 'right'}}>
+          comment about <em style={{color: 'blue'}}>{normalizeURL(tab.url)}</em>
+        </span>
         <textarea
           value={comment}
           onChange={e => setComment(e.target.value)}
@@ -81,20 +96,9 @@ function Popup() {
     </div>
   )
 
-  async function loadComments() {
-    let [tab] = await browser.tabs.query({active: true, currentWindow: true})
-    let events = await browser.runtime.sendMessage({
-      type: 'read',
-      url: normalizeURL(tab.pendingUrl || tab.url),
-      tabId: tab.id
-    })
-    setEvents(events)
-  }
-
   async function publishEvent(ev) {
     ev.preventDefault()
 
-    let [tab] = await browser.tabs.query({active: true, currentWindow: true})
     browser.runtime.sendMessage({
       type: 'publish',
       event: {
