@@ -151,7 +151,7 @@ browser.tabs.onUpdated.addListener(async (tabId, change, tab) => {
 async function fetchEvents(url, tabId, events) {
   pool = pool || (await initNostr())
   pool.sub({
-    filter: {'#r': [url]},
+    filter: {kinds: [34], '#r': [url]},
     cb: event => {
       if (event.id in events) return
       events[event.id] = event

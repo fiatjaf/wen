@@ -122,7 +122,7 @@ function Popup() {
       type: 'publish',
       event: {
         created_at: Math.round(Date.now() / 1000),
-        kind: 1,
+        kind: 34,
         tags: [['r', normalizeURL(tab.pendingUrl || tab.url)]],
         content: comment
       }
